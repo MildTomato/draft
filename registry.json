@@ -1,0 +1,41 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "draft",
+  "homepage": "https://draft.jonny.design",
+  "items": [
+    {
+      "name": "draft-studio",
+      "type": "registry:block",
+      "title": "Draft diagram studio",
+      "description": "An interactive technical diagram canvas with local persistence, editing controls, and JSON export.",
+      "dependencies": [
+        "@xyflow/react@^12.11.2",
+        "lucide-react@^1.26.0"
+      ],
+      "registryDependencies": [
+        "button",
+        "input",
+        "badge",
+        "separator",
+        "tooltip",
+        "toggle-group",
+        "dropdown-menu"
+      ],
+      "files": [
+        {
+          "path": "components/draft/draft-studio.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/draft/draft-studio.module.css",
+          "type": "registry:file",
+          "target": "components/draft/draft-studio.module.css"
+        },
+        {
+          "path": "lib/draft-document.ts",
+          "type": "registry:lib"
+        }
+      ]
+    }
+  ]
+}
