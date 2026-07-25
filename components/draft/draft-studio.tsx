@@ -5,6 +5,7 @@ import {
   addEdge,
   Background,
   BackgroundVariant,
+  ConnectionLineType,
   Controls,
   Handle,
   MarkerType,
@@ -71,6 +72,11 @@ import {
 import {
   createInitialEdges,
   createInitialNodes,
+  DRAFT_GRID_SIZE,
+  DRAFT_NODE_HEIGHT,
+  DRAFT_NODE_WIDTH,
+  normalizeDraftEdges,
+  normalizeDraftNodes,
   toDraftDocument,
   type DraftBoundaryData,
   type DraftCanvasEdge,
@@ -264,8 +270,8 @@ export function DraftStudio() {
           parsed.graph?.nodes &&
           parsed.graph.edges
         ) {
-          setNodes(parsed.graph.nodes)
-          setEdges(parsed.graph.edges)
+          setNodes(normalizeDraftNodes(parsed.graph.nodes))
+          setEdges(normalizeDraftEdges(parsed.graph.edges))
         }
       }
     } catch {
@@ -327,7 +333,7 @@ export function DraftStudio() {
         addEdge(
           {
             ...connection,
-            type: "smoothstep",
+            type: "step",
             data: { signal: "neutral" },
           },
           current
@@ -344,13 +350,16 @@ export function DraftStudio() {
       tone: DraftTone = "neutral"
     ) => {
       const id = `node-${crypto.randomUUID()}`
-      const selectedPosition = selectedNode?.position ?? { x: 500, y: 300 }
+      const selectedPosition = selectedNode?.position ?? { x: 480, y: 288 }
       const nextNode: DraftCanvasNode = {
         id,
         type: "draft",
         position: {
-          x: selectedPosition.x + 270,
-          y: selectedPosition.y + 110,
+          x: selectedPosition.x,
+          y:
+            selectedPosition.y +
+            DRAFT_NODE_HEIGHT +
+            DRAFT_GRID_SIZE * 4,
         },
         data: {
           label,
@@ -360,7 +369,7 @@ export function DraftStudio() {
           tone,
           kind,
         },
-        style: { width: 210 },
+        style: { width: DRAFT_NODE_WIDTH, height: DRAFT_NODE_HEIGHT },
       }
 
       setNodes((current) => [...current, nextNode])
@@ -371,9 +380,9 @@ export function DraftStudio() {
             id: `edge-${selectedNode.id}-${id}`,
             source: selectedNode.id,
             target: id,
-            sourceHandle: "right",
-            targetHandle: "left",
-            type: "smoothstep",
+            sourceHandle: "bottom",
+            targetHandle: "top",
+            type: "step",
             data: { signal: tone },
           },
         ])
@@ -614,6 +623,7 @@ export function DraftStudio() {
           nodes={nodes}
           edges={edges.map((edge) => ({
             ...edge,
+            type: "step",
             style: {
               stroke:
                 toneColors[
@@ -643,6 +653,7 @@ export function DraftStudio() {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
+          connectionLineType={ConnectionLineType.Step}
           onInit={setFlow}
           onNodeClick={(_, node) => {
             if (node.type === "draft") setSelectedNodeId(node.id)
@@ -653,14 +664,14 @@ export function DraftStudio() {
           minZoom={0.35}
           maxZoom={2}
           snapToGrid
-          snapGrid={[10, 10]}
+          snapGrid={[DRAFT_GRID_SIZE, DRAFT_GRID_SIZE]}
           nodesDraggable={activeTool !== "hand"}
           nodesConnectable={activeTool !== "hand"}
           panOnDrag={activeTool === "hand" ? true : [1, 2]}
           selectionOnDrag={activeTool === "select"}
           colorMode="dark"
           defaultEdgeOptions={{
-            type: "smoothstep",
+            type: "step",
             markerEnd: {
               type: MarkerType.ArrowClosed,
               width: 12,
@@ -672,7 +683,7 @@ export function DraftStudio() {
         >
           <Background
             variant={BackgroundVariant.Lines}
-            gap={24}
+            gap={DRAFT_GRID_SIZE}
             size={1}
             color="#141414"
           />
@@ -729,7 +740,7 @@ export function DraftStudio() {
           <span className={styles.footerPulse} />
           <span>LIVE DOCUMENT</span>
           <span className={styles.footerDivider} />
-          <span>GRID 10PX</span>
+          <span>GRID {DRAFT_GRID_SIZE}PX</span>
           <span>SNAP ON</span>
         </div>
       </section>

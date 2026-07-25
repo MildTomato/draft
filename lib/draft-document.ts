@@ -1,5 +1,9 @@
 import type { Edge, Node } from "@xyflow/react"
 
+export const DRAFT_GRID_SIZE = 24
+export const DRAFT_NODE_WIDTH = 240
+export const DRAFT_NODE_HEIGHT = 96
+
 export type DraftTone = "neutral" | "red" | "green" | "blue" | "violet"
 export type DraftNodeKind =
   | "client"
@@ -49,7 +53,45 @@ export type DraftDocument = {
   }
   layout: {
     direction: "TB" | "LR"
+    gridSize: typeof DRAFT_GRID_SIZE
   }
+}
+
+function snapToDraftGrid(value: number) {
+  return Math.round(value / DRAFT_GRID_SIZE) * DRAFT_GRID_SIZE
+}
+
+export function normalizeDraftNodes(
+  nodes: DraftCanvasNode[]
+): DraftCanvasNode[] {
+  return nodes.map((node) => ({
+    ...node,
+    position: {
+      x: snapToDraftGrid(node.position.x),
+      y: snapToDraftGrid(node.position.y),
+    },
+    style:
+      node.type === "draft"
+        ? {
+            ...node.style,
+            width: DRAFT_NODE_WIDTH,
+            height: DRAFT_NODE_HEIGHT,
+          }
+        : node.style,
+  })) as DraftCanvasNode[]
+}
+
+export function normalizeDraftEdges(
+  edges: DraftCanvasEdge[]
+): DraftCanvasEdge[] {
+  return edges.map((edge) => ({
+    ...edge,
+    type: "step",
+    sourceHandle:
+      edge.sourceHandle === "left" ? "bottom" : edge.sourceHandle,
+    targetHandle:
+      edge.targetHandle === "right" ? "left" : edge.targetHandle,
+  }))
 }
 
 export function createInitialNodes(): DraftCanvasNode[] {
@@ -57,12 +99,12 @@ export function createInitialNodes(): DraftCanvasNode[] {
     {
       id: "edge-boundary",
       type: "boundary",
-      position: { x: 150, y: 165 },
+      position: { x: 144, y: 168 },
       data: {
         label: "EDGE NETWORK",
         detail: "REQUEST ROUTING / REGION: SIN1",
       },
-      style: { width: 850, height: 430 },
+      style: { width: 864, height: 432 },
       draggable: false,
       selectable: false,
       zIndex: -1,
@@ -70,7 +112,7 @@ export function createInitialNodes(): DraftCanvasNode[] {
     {
       id: "client",
       type: "draft",
-      position: { x: 455, y: 24 },
+      position: { x: 456, y: 24 },
       data: {
         label: "Client",
         eyebrow: "ORIGIN",
@@ -79,12 +121,12 @@ export function createInitialNodes(): DraftCanvasNode[] {
         tone: "neutral",
         kind: "client",
       },
-      style: { width: 220 },
+      style: { width: DRAFT_NODE_WIDTH, height: DRAFT_NODE_HEIGHT },
     },
     {
       id: "edge-proxy",
       type: "draft",
-      position: { x: 465, y: 230 },
+      position: { x: 456, y: 240 },
       data: {
         label: "Edge proxy",
         eyebrow: "ENTRY",
@@ -93,12 +135,12 @@ export function createInitialNodes(): DraftCanvasNode[] {
         tone: "green",
         kind: "gateway",
       },
-      style: { width: 220 },
+      style: { width: DRAFT_NODE_WIDTH, height: DRAFT_NODE_HEIGHT },
     },
     {
       id: "policy",
       type: "draft",
-      position: { x: 220, y: 352 },
+      position: { x: 192, y: 360 },
       data: {
         label: "Policy engine",
         eyebrow: "CONTROL",
@@ -107,12 +149,12 @@ export function createInitialNodes(): DraftCanvasNode[] {
         tone: "violet",
         kind: "service",
       },
-      style: { width: 205 },
+      style: { width: DRAFT_NODE_WIDTH, height: DRAFT_NODE_HEIGHT },
     },
     {
       id: "router-a",
       type: "draft",
-      position: { x: 455, y: 438 },
+      position: { x: 456, y: 456 },
       data: {
         label: "Function router",
         eyebrow: "COMPUTE",
@@ -121,12 +163,12 @@ export function createInitialNodes(): DraftCanvasNode[] {
         tone: "blue",
         kind: "service",
       },
-      style: { width: 220 },
+      style: { width: DRAFT_NODE_WIDTH, height: DRAFT_NODE_HEIGHT },
     },
     {
       id: "router-b",
       type: "draft",
-      position: { x: 735, y: 352 },
+      position: { x: 744, y: 360 },
       data: {
         label: "Asset router",
         eyebrow: "STATIC",
@@ -135,12 +177,12 @@ export function createInitialNodes(): DraftCanvasNode[] {
         tone: "neutral",
         kind: "service",
       },
-      style: { width: 205 },
+      style: { width: DRAFT_NODE_WIDTH, height: DRAFT_NODE_HEIGHT },
     },
     {
       id: "event-stream",
       type: "draft",
-      position: { x: 1085, y: 244 },
+      position: { x: 1080, y: 240 },
       data: {
         label: "Event stream",
         eyebrow: "OBSERVE",
@@ -149,12 +191,12 @@ export function createInitialNodes(): DraftCanvasNode[] {
         tone: "red",
         kind: "queue",
       },
-      style: { width: 220 },
+      style: { width: DRAFT_NODE_WIDTH, height: DRAFT_NODE_HEIGHT },
     },
     {
       id: "warehouse",
       type: "draft",
-      position: { x: 1085, y: 454 },
+      position: { x: 1080, y: 456 },
       data: {
         label: "Global warehouse",
         eyebrow: "PERSIST",
@@ -163,7 +205,7 @@ export function createInitialNodes(): DraftCanvasNode[] {
         tone: "green",
         kind: "database",
       },
-      style: { width: 220 },
+      style: { width: DRAFT_NODE_WIDTH, height: DRAFT_NODE_HEIGHT },
     },
   ]
 }
@@ -176,7 +218,7 @@ export function createInitialEdges(): DraftCanvasEdge[] {
       target: "edge-proxy",
       sourceHandle: "bottom",
       targetHandle: "top",
-      type: "smoothstep",
+      type: "step",
       label: "REQUEST",
       data: { signal: "neutral" },
     },
@@ -184,9 +226,9 @@ export function createInitialEdges(): DraftCanvasEdge[] {
       id: "proxy-policy",
       source: "edge-proxy",
       target: "policy",
-      sourceHandle: "left",
+      sourceHandle: "bottom",
       targetHandle: "top",
-      type: "smoothstep",
+      type: "step",
       label: "CHECK",
       data: { signal: "violet" },
     },
@@ -196,7 +238,7 @@ export function createInitialEdges(): DraftCanvasEdge[] {
       target: "router-a",
       sourceHandle: "bottom",
       targetHandle: "top",
-      type: "smoothstep",
+      type: "step",
       label: "DYNAMIC",
       data: { signal: "blue" },
     },
@@ -206,7 +248,7 @@ export function createInitialEdges(): DraftCanvasEdge[] {
       target: "router-b",
       sourceHandle: "right",
       targetHandle: "top",
-      type: "smoothstep",
+      type: "step",
       label: "STATIC",
       data: { signal: "neutral" },
     },
@@ -216,7 +258,7 @@ export function createInitialEdges(): DraftCanvasEdge[] {
       target: "event-stream",
       sourceHandle: "right",
       targetHandle: "left",
-      type: "smoothstep",
+      type: "step",
       label: "METRICS",
       data: { signal: "red" },
     },
@@ -226,7 +268,7 @@ export function createInitialEdges(): DraftCanvasEdge[] {
       target: "warehouse",
       sourceHandle: "bottom",
       targetHandle: "top",
-      type: "smoothstep",
+      type: "step",
       label: "FLUSH",
       data: { signal: "green" },
     },
@@ -237,7 +279,7 @@ export function toDraftDocument(
   nodes: DraftCanvasNode[],
   edges: DraftCanvasEdge[]
 ): DraftDocument {
-  const cleanNodes = nodes.map(
+  const cleanNodes = normalizeDraftNodes(nodes).map(
     ({ id, type, position, data, style, draggable, selectable, zIndex }) => ({
       id,
       type,
@@ -250,14 +292,13 @@ export function toDraftDocument(
     })
   ) as DraftCanvasNode[]
 
-  const cleanEdges = edges.map(
+  const cleanEdges = normalizeDraftEdges(edges).map(
     ({
       id,
       source,
       target,
       sourceHandle,
       targetHandle,
-      type,
       label,
       data,
     }) => ({
@@ -266,7 +307,7 @@ export function toDraftDocument(
       target,
       sourceHandle,
       targetHandle,
-      type,
+      type: "step" as const,
       label,
       data,
     })
@@ -288,6 +329,7 @@ export function toDraftDocument(
     },
     layout: {
       direction: "TB",
+      gridSize: DRAFT_GRID_SIZE,
     },
   }
 }

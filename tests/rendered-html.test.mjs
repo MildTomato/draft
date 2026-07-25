@@ -4,51 +4,31 @@ import test from "node:test"
 
 const templateRoot = new URL("../", import.meta.url)
 
-async function render() {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url)
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`)
-  const { default: worker } = await import(workerUrl.href)
-
-  return worker.fetch(
-    new Request("http://localhost/", {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    }
+test("uses the standard Next.js runtime", async () => {
+  const packageJson = JSON.parse(
+    await readFile(new URL("../package.json", import.meta.url), "utf8")
   )
-}
 
-test("server-renders the Draft studio shell", async () => {
-  const response = await render()
-  assert.equal(response.status, 200)
-  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i)
+  assert.equal(packageJson.scripts.dev, "next dev")
+  assert.equal(packageJson.scripts.build, "next build --webpack")
+  assert.equal(packageJson.scripts.start, "next start")
+  assert.equal(packageJson.dependencies.next, "16.2.6")
+  assert.equal(packageJson.devDependencies?.vite, undefined)
+  assert.equal(packageJson.devDependencies?.vinext, undefined)
+  assert.equal(packageJson.devDependencies?.wrangler, undefined)
 
-  const html = await response.text()
-  assert.match(
-    html,
-    /<title>Draft — Technical diagrams, still in motion<\/title>/i
-  )
-  assert.match(html, /draft/i)
-  assert.match(html, /Edge request path/i)
-  assert.match(html, /Diagram canvas/i)
-  assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i)
+  await access(new URL("../.next/BUILD_ID", import.meta.url))
 })
 
 test("keeps the app and registry on one implementation boundary", async () => {
-  const [page, registry, studio, design] = await Promise.all([
+  const [page, registry, studio, documentModel, design] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../registry.json", import.meta.url), "utf8"),
     readFile(
       new URL("../components/draft/draft-studio.tsx", import.meta.url),
       "utf8"
     ),
+    readFile(new URL("../lib/draft-document.ts", import.meta.url), "utf8"),
     readFile(new URL("../DESIGN.md", import.meta.url), "utf8"),
   ])
 
@@ -67,6 +47,18 @@ test("keeps the app and registry on one implementation boundary", async () => {
   )
   assert.match(studio, /export function DraftStudio/)
   assert.match(studio, /toDraftDocument/)
+  assert.match(studio, /connectionLineType=\{ConnectionLineType\.Step\}/)
+  assert.match(
+    studio,
+    /snapGrid=\{\[DRAFT_GRID_SIZE, DRAFT_GRID_SIZE\]\}/
+  )
+  assert.doesNotMatch(studio, /type:\s*"smoothstep"/)
+  assert.match(studio, /sourceHandle:\s*"bottom"/)
+  assert.match(studio, /targetHandle:\s*"top"/)
+  assert.doesNotMatch(documentModel, /type:\s*"smoothstep"/)
+  assert.match(documentModel, /DRAFT_GRID_SIZE = 24/)
+  assert.match(documentModel, /DRAFT_NODE_WIDTH = 240/)
+  assert.match(documentModel, /DRAFT_NODE_HEIGHT = 96/)
   assert.match(design, /Industrial schematic/)
 
   await access(new URL("components.json", templateRoot))
