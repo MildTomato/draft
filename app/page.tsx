@@ -1,5 +1,5 @@
-import { DraftStudio } from "@/components/draft/draft-studio"
+import { DiagramEditor } from "@/components/draft/diagram-editor"
 
 export default function Home() {
-  return <DraftStudio />
+  return <DiagramEditor />
 }

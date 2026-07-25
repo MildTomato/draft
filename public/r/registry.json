@@ -4,15 +4,39 @@
   "homepage": "https://draft.jonny.design",
   "items": [
     {
-      "name": "draft-studio",
-      "type": "registry:block",
-      "title": "Draft diagram studio",
-      "description": "An interactive technical diagram canvas with local persistence, editing controls, and JSON export.",
+      "name": "draft-diagram",
+      "type": "registry:component",
+      "title": "Draft diagram",
+      "description": "A read-only technical diagram renderer built from source-owned React components.",
       "dependencies": [
-        "@xyflow/react@^12.11.2",
+        "lucide-react@^1.26.0"
+      ],
+      "files": [
+        {
+          "path": "components/draft/diagram.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "components/draft/diagram.module.css",
+          "type": "registry:file",
+          "target": "components/draft/diagram.module.css"
+        },
+        {
+          "path": "lib/draft-document.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "draft-editor",
+      "type": "registry:block",
+      "title": "Draft diagram editor",
+      "description": "The complete Draft authoring interface, including selection, snapping, connections, local persistence, and JSON export.",
+      "dependencies": [
         "lucide-react@^1.26.0"
       ],
       "registryDependencies": [
+        "https://draft.jonny.design/r/draft-diagram.json",
         "button",
         "input",
         "badge",
@@ -23,17 +47,13 @@
       ],
       "files": [
         {
-          "path": "components/draft/draft-studio.tsx",
+          "path": "components/draft/diagram-editor.tsx",
           "type": "registry:component"
         },
         {
-          "path": "components/draft/draft-studio.module.css",
+          "path": "components/draft/diagram-editor.module.css",
           "type": "registry:file",
-          "target": "components/draft/draft-studio.module.css"
-        },
-        {
-          "path": "lib/draft-document.ts",
-          "type": "registry:lib"
+          "target": "components/draft/diagram-editor.module.css"
         }
       ]
     }

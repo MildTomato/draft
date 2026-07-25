@@ -39,7 +39,11 @@
 ## Layout
 
 - **Approach:** Grid-disciplined.
-- The editor uses a fixed top bar, narrow tool rail, infinite canvas, and compact inspector.
+- The editor uses a fixed top bar, narrow tool rail, pannable viewport, and
+  compact inspector.
+- Each diagram has a finite logical canvas with a top-left origin.
+- Draft uses a fixed 24-unit grid token. Documents store resulting coordinates,
+  not the grid token.
 - Diagram boundaries and nested systems are shown with frames rather than card collections.
 
 ## Motion
@@ -51,8 +55,12 @@
 
 ## Distribution
 
-- The application consumes the same `DraftStudio` component published by the shadcn registry.
-- Registry components may depend on npm packages for the rendering engine, but their interface and theme remain editable in the consuming project.
+- The application and registry use the same source-owned diagram renderer.
+- `draft-diagram` contains the read-only provider, frame, renderer, primitives,
+  and document model.
+- `draft-editor` adds authoring controls as a separate optional registry block.
+- The read-only renderer must not depend on the editor or a third-party canvas
+  engine.
 
 ## Decisions Log
 
@@ -60,4 +68,6 @@
 | --- | --- | --- |
 | 2026-07-25 | Dark industrial schematic as the first style | It gives Draft a specific visual voice and keeps dense technical diagrams legible. |
 | 2026-07-25 | shadcn for application chrome | Consumers can install and adapt the interface using familiar project-owned components. |
-| 2026-07-25 | React Flow behind Draft’s component boundary | It provides proven canvas interaction while leaving Draft’s schema and visual system under our control. |
+| 2026-07-25 | One source-owned renderer for read-only and editor modes | It keeps diagram components agnostic and prevents the installed renderer from inheriting editor dependencies. |
+| 2026-07-25 | Fixed 24-unit grid token | It gives the editor and future agents one deterministic layout system without adding a per-document option. |
+| 2026-07-25 | Finite top-left canvas coordinates | They produce deterministic rendering and export dimensions while the editor viewport remains pannable and zoomable. |

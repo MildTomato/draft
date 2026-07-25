@@ -20,47 +20,80 @@ test("uses the standard Next.js runtime", async () => {
   await access(new URL("../.next/BUILD_ID", import.meta.url))
 })
 
-test("keeps the app and registry on one implementation boundary", async () => {
-  const [page, registry, studio, documentModel, design] = await Promise.all([
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../registry.json", import.meta.url), "utf8"),
-    readFile(
-      new URL("../components/draft/draft-studio.tsx", import.meta.url),
-      "utf8"
-    ),
-    readFile(new URL("../lib/draft-document.ts", import.meta.url), "utf8"),
-    readFile(new URL("../DESIGN.md", import.meta.url), "utf8"),
-  ])
+test("separates the source-owned renderer from the editor", async () => {
+  const [page, registry, editor, renderer, documentModel, design, packageJson] =
+    await Promise.all([
+      readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+      readFile(new URL("../registry.json", import.meta.url), "utf8"),
+      readFile(
+        new URL("../components/draft/diagram-editor.tsx", import.meta.url),
+        "utf8"
+      ),
+      readFile(
+        new URL("../components/draft/diagram.tsx", import.meta.url),
+        "utf8"
+      ),
+      readFile(new URL("../lib/draft-document.ts", import.meta.url), "utf8"),
+      readFile(new URL("../DESIGN.md", import.meta.url), "utf8"),
+      readFile(new URL("../package.json", import.meta.url), "utf8"),
+    ])
 
   const manifest = JSON.parse(registry)
-  const item = manifest.items.find((entry) => entry.name === "draft-studio")
+  const diagramItem = manifest.items.find(
+    (entry) => entry.name === "draft-diagram"
+  )
+  const editorItem = manifest.items.find(
+    (entry) => entry.name === "draft-editor"
+  )
 
-  assert.match(page, /<DraftStudio \/>/)
-  assert.ok(item)
-  assert.equal(item.type, "registry:block")
-  assert.ok(item.dependencies.includes("@xyflow/react@^12.11.2"))
-  assert.ok(item.registryDependencies.includes("button"))
+  assert.match(page, /<DiagramEditor \/>/)
+  assert.ok(diagramItem)
+  assert.equal(diagramItem.type, "registry:component")
+  assert.deepEqual(diagramItem.dependencies, ["lucide-react@^1.26.0"])
+  assert.equal(diagramItem.registryDependencies, undefined)
   assert.ok(
-    item.files.some(
-      (file) => file.path === "components/draft/draft-studio.tsx"
+    diagramItem.files.some(
+      (file) => file.path === "components/draft/diagram.tsx"
     )
   )
-  assert.match(studio, /export function DraftStudio/)
-  assert.match(studio, /toDraftDocument/)
-  assert.match(studio, /connectionLineType=\{ConnectionLineType\.Step\}/)
-  assert.match(
-    studio,
-    /snapGrid=\{\[DRAFT_GRID_SIZE, DRAFT_GRID_SIZE\]\}/
+  assert.ok(
+    diagramItem.files.every(
+      (file) => !file.path.includes("editor")
+    )
   )
-  assert.doesNotMatch(studio, /type:\s*"smoothstep"/)
-  assert.match(studio, /sourceHandle:\s*"bottom"/)
-  assert.match(studio, /targetHandle:\s*"top"/)
-  assert.doesNotMatch(documentModel, /type:\s*"smoothstep"/)
+  assert.ok(editorItem)
+  assert.equal(editorItem.type, "registry:block")
+  assert.ok(
+    editorItem.registryDependencies.includes(
+      "https://draft.jonny.design/r/draft-diagram.json"
+    )
+  )
+  assert.ok(editorItem.registryDependencies.includes("button"))
+  assert.ok(
+    editorItem.files.some(
+      (file) => file.path === "components/draft/diagram-editor.tsx"
+    )
+  )
+  assert.match(editor, /export function DiagramEditor/)
+  assert.match(editor, /<DiagramProvider document=\{diagramDocument\}>/)
+  assert.match(editor, /<Diagram viewport=\{viewport\}>/)
+  assert.match(renderer, /export function DiagramProvider/)
+  assert.match(renderer, /export function DiagramFrame/)
+  assert.match(renderer, /export function Diagram\(/)
+  assert.match(renderer, /export function DiagramNode/)
+  assert.match(renderer, /export function DiagramConnector/)
+  assert.doesNotMatch(editor, /@xyflow/)
+  assert.doesNotMatch(renderer, /@xyflow/)
+  assert.doesNotMatch(documentModel, /@xyflow/)
+  assert.doesNotMatch(packageJson, /@xyflow/)
+  assert.doesNotMatch(registry, /@xyflow/)
   assert.match(documentModel, /DRAFT_GRID_SIZE = 24/)
+  assert.doesNotMatch(documentModel, /gridSize:/)
   assert.match(documentModel, /DRAFT_NODE_WIDTH = 240/)
   assert.match(documentModel, /DRAFT_NODE_HEIGHT = 96/)
   assert.match(design, /Industrial schematic/)
 
   await access(new URL("components.json", templateRoot))
   await access(new URL("lib/draft-document.ts", templateRoot))
+  await access(new URL("components/draft/diagram.tsx", templateRoot))
 })
