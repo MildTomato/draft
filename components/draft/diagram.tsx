@@ -35,6 +35,10 @@ import { cn } from "@/lib/utils"
 
 import styles from "./diagram.module.css"
 
+function getToneColor(tone: keyof typeof DRAFT_TONE_COLORS) {
+  return `var(--draft-tone-${tone}, ${DRAFT_TONE_COLORS[tone]})`
+}
+
 type DiagramContextValue = {
   document: DraftDocument
 }
@@ -196,7 +200,7 @@ export function DiagramBoundary({ boundary }: { boundary: DraftBoundary }) {
 
 export function DiagramNode({ node }: { node: DraftNode }) {
   const Icon = nodeIcons[node.data.kind]
-  const tone = DRAFT_TONE_COLORS[node.data.tone]
+  const tone = getToneColor(node.data.tone)
 
   return (
     <foreignObject
@@ -247,7 +251,6 @@ export function DiagramLabel({
         y={-9}
         width={width}
         height={18}
-        rx={9}
         className={styles.connectorLabelBackground}
       />
       <text
@@ -283,7 +286,7 @@ export function DiagramConnector({
     connector.sourcePort,
     connector.targetPort
   )
-  const tone = DRAFT_TONE_COLORS[connector.tone]
+  const tone = getToneColor(connector.tone)
 
   return (
     <g data-draft-connector={connector.id} pointerEvents="none">
@@ -350,9 +353,7 @@ export function Diagram({
         >
           <path
             d={`M ${DRAFT_GRID_SIZE} 0 L 0 0 0 ${DRAFT_GRID_SIZE}`}
-            fill="none"
-            stroke="#141414"
-            strokeWidth="1"
+            className={styles.gridLine}
           />
         </pattern>
         {(Object.keys(DRAFT_TONE_COLORS) as Array<
@@ -368,7 +369,7 @@ export function Diagram({
             markerHeight="7"
             orient="auto-start-reverse"
           >
-            <path d="M 0 0 L 10 5 L 0 10 z" fill={DRAFT_TONE_COLORS[tone]} />
+            <path d="M 0 0 L 10 5 L 0 10 z" fill={getToneColor(tone)} />
           </marker>
         ))}
       </defs>

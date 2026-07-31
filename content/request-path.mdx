@@ -1,0 +1,127 @@
+import {
+  ArticleDiagram,
+  ArticleMeta,
+} from "@/components/blog/article-diagram"
+
+# The diagram is part of the sentence
+
+A technical diagram works best when it reads with the surrounding prose. It
+should use the same rhythm, the same emphasis, and the same visual language as
+the article—not arrive as a screenshot from another product.
+
+<ArticleMeta date="July 25, 2026" readingTime="6 minute read" />
+
+Most diagram tools treat the result as a separate artifact. You draw somewhere
+else, export an image, and place that image into the page. The moment the
+article’s typography or color system changes, the diagram becomes a historical
+record of an older design.
+
+Draft takes the opposite approach. A diagram is a document rendered by ordinary
+React components. The article can therefore style the diagram with the same CSS
+variables it uses for text, controls, and code.
+
+<ArticleDiagram
+  diagram="request-path"
+  caption="The node label and article body share one text-size token. The logical diagram remains unchanged when you switch themes."
+/>
+
+## One document, two hosts
+
+The editor and the article render the same primitives. The editor adds an
+interaction layer for selection, dragging, connections, and inspection. The
+article only needs the read-only provider, frame, and diagram.
+
+```tsx
+<DiagramProvider document={requestPath}>
+  <DiagramFrame>
+    <Diagram />
+  </DiagramFrame>
+</DiagramProvider>
+```
+
+Nothing in that composition knows whether it appears in a product, a blog post,
+or generated documentation. `DiagramNode` receives geometry and content.
+`DiagramConnector` receives endpoints and signal meaning. Presentation comes
+from the nearest theme.
+
+## Coordinates are the contract
+
+Every saved diagram has a finite logical canvas with a top-left origin. Nodes
+store their top-left position and size. Connectors reference nodes and ports
+rather than browser elements.
+
+```json
+{
+  "canvas": { "width": 960, "height": 336 },
+  "graph": {
+    "nodes": [
+      {
+        "id": "edge",
+        "type": "node",
+        "position": { "x": 360, "y": 120 },
+        "size": { "width": 240, "height": 96 }
+      }
+    ]
+  }
+}
+```
+
+The editor snaps those coordinates to Draft’s fixed 24-unit grid. The grid is a
+design-system token, not an option repeated in every document. A future agent
+can produce the same coordinates without importing the editor.
+
+> The document describes meaning and geometry. The host describes appearance
+> and interaction.
+
+<ArticleDiagram
+  diagram="authoring-loop"
+  caption="A person and an agent can both author the document. The editor and renderer consume it without owning its schema."
+/>
+
+## A theme reaches every layer
+
+This page has three themes, but it has only one MDX article and one set of
+diagram documents. Each theme file defines the same semantic contract for
+shadcn controls, Typeset prose, Shiki tokens, and Draft primitives.
+
+```css
+.theme {
+  --background: #080808;
+  --foreground: #dedede;
+
+  --draft-text-size: 16px;
+  --draft-frame-background: #070707;
+  --draft-frame-radius: 4px;
+  --draft-node-background: #0d0d0d;
+  --draft-node-radius: 4px;
+  --draft-node-text: #d6d6d6;
+  --draft-boundary-radius: 3px;
+  --draft-label-radius: 999px;
+  --draft-tone-blue: #6d91d8;
+
+  --typeset-body: #a5a5a5;
+  --typeset-heading: #ededed;
+  --code-background: #0c0c0c;
+}
+```
+
+The theme controls more than color. It can set independent radii, borders,
+strokes, shadows, and accent widths for each primitive. `--draft-text-size`
+still connects the article’s base size to Draft’s node labels, while smaller
+diagram metadata derives from that value.
+
+## The result stays open
+
+Source-owned components make the output inspectable and adaptable. You can
+change the visual system without converting the document, and you can change
+the document without rewriting the renderer.
+
+| Layer | Owns | Does not own |
+| --- | --- | --- |
+| Document | Meaning and geometry | CSS and editor state |
+| Renderer | Diagram primitives | Authoring interactions |
+| Editor | Human interaction | Final presentation |
+| Theme | Type, color, shape, and rhythm | Diagram meaning |
+
+That separation is what lets a diagram belong naturally inside an article. It
+isn’t an attachment. It is part of the page.

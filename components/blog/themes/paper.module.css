@@ -1,0 +1,97 @@
+.theme {
+  --background: #f0ede4;
+  --foreground: #292720;
+  --card: #f7f4eb;
+  --card-foreground: #292720;
+  --popover: #faf8f1;
+  --popover-foreground: #292720;
+  --primary: #292720;
+  --primary-foreground: #f7f4eb;
+  --secondary: #e5e0d4;
+  --secondary-foreground: #38352d;
+  --muted: #e7e2d7;
+  --muted-foreground: #746f63;
+  --accent: #ded8ca;
+  --accent-foreground: #292720;
+  --destructive: #9f3e35;
+  --border: #cec7b9;
+  --input: #c8c0b2;
+  --ring: #827b6d;
+  --radius: 0;
+  --blog-background: #f0ede4;
+  --blog-texture:
+    radial-gradient(circle at 20% 10%, rgba(255, 255, 255, 0.7), transparent 28%),
+    linear-gradient(rgba(65, 58, 45, 0.025) 1px, transparent 1px);
+  --blog-header: rgba(240, 237, 228, 0.9);
+  --blog-rule: #cec7b9;
+  --blog-rule-strong: #aaa191;
+  --blog-chrome-text: #4a463c;
+  --blog-chrome-muted: #817a6d;
+  --blog-control-border: #b9b1a2;
+  --blog-control-active: #e3ded2;
+  --blog-control-hover: #e8e3d8;
+  --blog-control-radius: 0;
+  --blog-font-body: Georgia, "Times New Roman", serif;
+  --blog-font-heading: Georgia, "Times New Roman", serif;
+  --blog-leading: 1.82;
+  --blog-flow: 1.48em;
+  --draft-text-size: 16px;
+  --draft-frame-background: #ebe7dd;
+  --draft-frame-border: #bfb7a8;
+  --draft-frame-border-width: 1px;
+  --draft-frame-radius: 0;
+  --draft-frame-shadow: 0 24px 60px rgba(57, 48, 35, 0.12);
+  --draft-grid-color: #ddd7ca;
+  --draft-grid-width: 1;
+  --draft-node-background: #f7f4ec;
+  --draft-node-border: #aca394;
+  --draft-node-border-width: 1px;
+  --draft-node-radius: 0;
+  --draft-node-accent-width: 2px;
+  --draft-node-text: #302d26;
+  --draft-node-muted: #817a6e;
+  --draft-status-border-width: 1px;
+  --draft-status-radius: 0;
+  --draft-boundary-fill: rgba(66, 58, 44, 0.025);
+  --draft-boundary-border: #bdb5a6;
+  --draft-boundary-border-width: 1;
+  --draft-boundary-radius: 0;
+  --draft-boundary-inner: #d1cabc;
+  --draft-boundary-inner-width: 1;
+  --draft-boundary-inner-radius: 0;
+  --draft-boundary-rule: #c8c0b2;
+  --draft-boundary-text: #665f53;
+  --draft-boundary-muted: #8c8477;
+  --draft-boundary-index: #9c9487;
+  --draft-label-background: #f0ede4;
+  --draft-label-border: #aaa293;
+  --draft-label-border-width: 1;
+  --draft-label-radius: 0;
+  --draft-connector-width: 1;
+  --draft-tone-neutral: #726b5f;
+  --draft-tone-red: #a5473c;
+  --draft-tone-green: #397861;
+  --draft-tone-blue: #3f648f;
+  --draft-tone-violet: #765386;
+  --typeset-body: #4f4b42;
+  --typeset-heading: #24221d;
+  --typeset-lead: #676156;
+  --typeset-link: #3e5f82;
+  --typeset-strong: #292720;
+  --typeset-marker: #8a8275;
+  --typeset-rule: #c8c0b2;
+  --typeset-quote: #6c665a;
+  --typeset-inline-code-bg: #e4dfd4;
+  --typeset-inline-code-border: #c5bdaf;
+  --typeset-inline-code: #3a3730;
+  --code-background: #e7e2d7;
+  --code-border: #c4bcad;
+  --code-radius: 0;
+  --code-shadow: 0 18px 45px rgba(57, 48, 35, 0.1);
+  background-size: auto, 100% 28px;
+}
+
+.theme :global(.shiki),
+.theme :global(.shiki span) {
+  --blog-shiki-token: var(--shiki-paper);
+}

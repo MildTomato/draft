@@ -1,0 +1,212 @@
+.shell {
+  min-height: 100svh;
+  overflow-x: hidden;
+  background-color: var(--blog-background);
+  background-image: var(--blog-texture);
+  color: var(--foreground);
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid var(--blog-rule);
+  background: var(--blog-header);
+  backdrop-filter: blur(18px);
+}
+
+.headerInner {
+  display: flex;
+  width: min(1180px, calc(100% - 32px));
+  min-height: 54px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 0 auto;
+}
+
+.backLink,
+.themeControl,
+.themeLabel {
+  display: flex;
+  align-items: center;
+}
+
+.backLink {
+  gap: 9px;
+  color: var(--blog-chrome-text);
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+
+.backLink > svg {
+  width: 13px;
+  height: 13px;
+}
+
+.brandMark {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border: 1px solid currentColor;
+  font-size: 10px;
+}
+
+.themeControl {
+  gap: 3px;
+}
+
+.themeLabel {
+  gap: 6px;
+  margin-right: 7px;
+  color: var(--blog-chrome-muted);
+  font-family: var(--font-geist-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.themeLabel svg {
+  width: 12px;
+  height: 12px;
+}
+
+.themeButton {
+  min-width: 72px;
+  border: 1px solid transparent;
+  border-radius: var(--blog-control-radius);
+  color: var(--blog-chrome-muted);
+  font-family: var(--font-geist-mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+}
+
+.themeButton:hover {
+  background: var(--blog-control-hover);
+  color: var(--blog-chrome-text);
+}
+
+.themeButton[aria-pressed="true"] {
+  border-color: var(--blog-control-border);
+  background: var(--blog-control-active);
+  color: var(--blog-chrome-text);
+}
+
+.themeButton svg {
+  width: 11px;
+  height: 11px;
+}
+
+.article {
+  width: min(680px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 104px 0 132px;
+  --typeset-font-body: var(--blog-font-body);
+  --typeset-font-heading: var(--blog-font-heading);
+  --typeset-font-mono: var(--font-geist-mono);
+  --typeset-size: var(--draft-text-size);
+  --typeset-leading: var(--blog-leading);
+  --typeset-flow: var(--blog-flow);
+}
+
+.articleMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 24px 0 56px;
+  padding-top: 14px;
+  border-top: 1px solid var(--blog-rule);
+  color: var(--blog-chrome-muted);
+  font-family: var(--font-geist-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.articleMeta span + span::before {
+  margin-right: 18px;
+  color: var(--blog-rule-strong);
+  content: "/";
+}
+
+.figure {
+  width: min(960px, calc(100vw - 32px));
+  margin: 64px 50% 72px;
+  color: var(--blog-chrome-muted);
+  transform: translateX(-50%);
+}
+
+.articleDiagram {
+  width: 100%;
+  height: auto;
+}
+
+.figure figcaption {
+  max-width: 680px;
+  margin: 12px auto 0;
+  color: var(--typeset-body);
+  font-family: var(--blog-font-body);
+  font-size: calc(var(--draft-text-size) * 0.86);
+  line-height: 1.55;
+  text-align: center;
+}
+
+.footer {
+  display: flex;
+  min-height: 64px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 max(16px, calc((100vw - 1180px) / 2));
+  border-top: 1px solid var(--blog-rule);
+  color: var(--blog-chrome-muted);
+  font-family: var(--font-geist-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 720px) {
+  .headerInner {
+    min-height: 96px;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .themeLabel {
+    display: none;
+  }
+
+  .themeButton {
+    min-width: 0;
+    padding-inline: 9px;
+  }
+
+  .article {
+    padding-top: 72px;
+  }
+
+  .figure {
+    margin-block: 48px 56px;
+  }
+
+  .footer {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell {
+    transition: none;
+  }
+}

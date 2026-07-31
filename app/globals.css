@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "./typeset.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -125,9 +126,16 @@
   html,
   body {
     width: 100%;
-    height: 100%;
     margin: 0;
-    overflow: hidden;
+  }
+
+  html {
+    min-height: 100%;
+  }
+
+  body {
+    min-height: 100vh;
+    overflow-x: hidden;
   }
 
   html {

@@ -1,0 +1,98 @@
+.theme {
+  --background: #0a0920;
+  --foreground: #f0efff;
+  --card: #11102c;
+  --card-foreground: #f0efff;
+  --popover: #151332;
+  --popover-foreground: #f0efff;
+  --primary: #8ff8ff;
+  --primary-foreground: #08071a;
+  --secondary: #1b1842;
+  --secondary-foreground: #d9d5ff;
+  --muted: #19173a;
+  --muted-foreground: #8984b0;
+  --accent: #262153;
+  --accent-foreground: #ffffff;
+  --destructive: #ff6b8b;
+  --border: #302b62;
+  --input: #3b3472;
+  --ring: #8ff8ff;
+  --radius: 0.75rem;
+  --blog-background: #09081d;
+  --blog-texture:
+    radial-gradient(circle at 78% 4%, rgba(181, 95, 255, 0.18), transparent 28%),
+    radial-gradient(circle at 8% 42%, rgba(67, 226, 255, 0.1), transparent 24%);
+  --blog-header: rgba(9, 8, 29, 0.86);
+  --blog-rule: #2a2658;
+  --blog-rule-strong: #4a4386;
+  --blog-chrome-text: #c8c4f3;
+  --blog-chrome-muted: #77719d;
+  --blog-control-border: #494181;
+  --blog-control-active: #211d4b;
+  --blog-control-hover: #19163d;
+  --blog-control-radius: 999px;
+  --blog-font-body: var(--font-geist-sans);
+  --blog-font-heading: var(--font-geist-sans);
+  --blog-leading: 1.72;
+  --blog-flow: 1.35em;
+  --draft-text-size: 16px;
+  --draft-frame-background: #09081d;
+  --draft-frame-border: #37306e;
+  --draft-frame-border-width: 1px;
+  --draft-frame-radius: 24px;
+  --draft-frame-shadow:
+    0 0 0 1px rgba(117, 236, 255, 0.05),
+    0 28px 90px rgba(5, 3, 24, 0.55);
+  --draft-grid-color: #17143b;
+  --draft-grid-width: 1;
+  --draft-node-background: #11102d;
+  --draft-node-border: #433b7a;
+  --draft-node-border-width: 1px;
+  --draft-node-radius: 16px;
+  --draft-node-accent-width: 4px;
+  --draft-node-text: #eceaff;
+  --draft-node-muted: #7b75a4;
+  --draft-status-border-width: 1px;
+  --draft-status-radius: 999px;
+  --draft-boundary-fill: rgba(144, 241, 255, 0.012);
+  --draft-boundary-border: #342f68;
+  --draft-boundary-border-width: 1;
+  --draft-boundary-radius: 14px;
+  --draft-boundary-inner: #201c4b;
+  --draft-boundary-inner-width: 1;
+  --draft-boundary-inner-radius: 10px;
+  --draft-boundary-rule: #292557;
+  --draft-boundary-text: #8f89bd;
+  --draft-boundary-muted: #514a83;
+  --draft-boundary-index: #403a70;
+  --draft-label-background: #0b0922;
+  --draft-label-border: #423a79;
+  --draft-label-border-width: 1;
+  --draft-label-radius: 999px;
+  --draft-connector-width: 1.5;
+  --draft-tone-neutral: #9d97c6;
+  --draft-tone-red: #ff6b8b;
+  --draft-tone-green: #6ef3b2;
+  --draft-tone-blue: #75ecff;
+  --draft-tone-violet: #c982ff;
+  --typeset-body: #aaa5d0;
+  --typeset-heading: #f3f1ff;
+  --typeset-lead: #aaa4d1;
+  --typeset-link: #83efff;
+  --typeset-strong: #e9e6ff;
+  --typeset-marker: #756fa3;
+  --typeset-rule: #302b62;
+  --typeset-quote: #aaa4d1;
+  --typeset-inline-code-bg: #161336;
+  --typeset-inline-code-border: #39326d;
+  --typeset-inline-code: #cbb8ff;
+  --code-background: #0d0b28;
+  --code-border: #342e68;
+  --code-radius: 12px;
+  --code-shadow: 0 22px 70px rgba(4, 2, 22, 0.55);
+}
+
+.theme :global(.shiki),
+.theme :global(.shiki span) {
+  --blog-shiki-token: var(--shiki-signal);
+}
